@@ -10,7 +10,18 @@ public class Item {
 
     private String title;
     private String description;
-    private String status; // "lost" or "found"
+    private String status;// "lost" or "found"
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    private String photo; // Image file path
+
 
     @ManyToOne
     private User user;
