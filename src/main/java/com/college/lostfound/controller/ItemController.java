@@ -26,27 +26,33 @@ public class ItemController {
             @RequestParam("photo") MultipartFile photo
     ) {
         try {
-            // Save photo to /uploads/
-            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
-            String uploadDir = "uploads/";
+            // Define upload directory inside user home folder
+            String uploadDir = System.getProperty("user.home") + File.separator + "lostfound_uploads" + File.separator;
             File uploadFolder = new File(uploadDir);
-            if (!uploadFolder.exists()) uploadFolder.mkdirs();
+            if (!uploadFolder.exists()) {
+                uploadFolder.mkdirs();
+            }
 
+            // Prepare the file name and file object
+            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
             File file = new File(uploadDir + fileName);
+
+            // Save the uploaded file to the defined location
             photo.transferTo(file);
 
-            // Convert JSON string to Item
+            // Convert JSON string to Item object
             ObjectMapper mapper = new ObjectMapper();
             Item item = mapper.readValue(itemJson, Item.class);
 
-            item.setPhoto("/" + uploadDir + fileName); // save image path
+            // Set photo path relative to uploads folder (adjust this path if needed)
+            item.setPhoto("/lostfound_uploads/" + fileName);
 
+            // Save item to database and return it
             return service.postItem(item);
         } catch (Exception e) {
             throw new RuntimeException("Error uploading item", e);
         }
     }
-
     @GetMapping("/lost")
     public List<Item> getLostItems() {
         return service.getItemsByStatus("lost");
@@ -55,5 +61,10 @@ public class ItemController {
     @GetMapping("/found")
     public List<Item> getFoundItems() {
         return service.getItemsByStatus("found");
+    }
+
+    @GetMapping
+    public List<Item> getAllItems() {
+        return service.getAllItems();
     }
 }

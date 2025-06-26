@@ -8,6 +8,7 @@ import java.util.List;
 
 @Service
 public class ItemService {
+
     private final ItemRepository repo;
 
     public ItemService(ItemRepository repo) {
@@ -21,4 +22,9 @@ public class ItemService {
     public List<Item> getItemsByStatus(String status) {
         return repo.findByStatus(status);
     }
+
+    public List<Item> getAllItems() {
+        return repo.findAll();
+    }
 }
+
